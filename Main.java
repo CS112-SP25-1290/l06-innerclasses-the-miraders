@@ -34,10 +34,10 @@ public class Main
 	public static void main(String[] args)
 	{
 		// DECLARATION + INITIALIZATION
-		Person p1 = new Person("Amira", "I am a Syrian refugee.", 40);
-		Person p2 = new Person("D'Andra", "I am an African-American trans woman.", -20);
-		Person p3 = new Person("Jennifer", "I am a New Yorker", 140);
-		Person p4 = new Person("Pete", "I am a guy from Pennsylvania", 200);
+		Person p1 = new Person("Amira", "I am a Syrian refugee.", "She/Her", 40);
+		Person p2 = new Person("D'Andra", "I am an African-American trans woman.", "She/Her", -20);
+		Person p3 = new Person("Jennifer", "I am a New Yorker", "She/Her", 140);
+		Person p4 = new Person("Pete", "I am a guy from Pennsylvania", "He/Him", 200);
 		Person self = new Person();
 		Person[] people = {p1, p2, p3, p4, self};
 		boolean done = false;
@@ -74,8 +74,11 @@ public class Main
 					break;
 				case 3:
 					/***** TODO: (Part 1) implement a comparison case using the comparable method on the Person class to compare self to p1-p4*****/
-					
-					System.out.println("\nReturning to main menu.\n");
+					for (Person p : people) {
+						if (p != self) {
+							System.out.println(self.getName() + " compared to " + p.getName() + ": " + self.compareTo(p));
+						}
+					}
 					break;
 				case 4:
 					System.out.println("Exiting Program...\n");
@@ -96,53 +99,33 @@ public class Main
 	/***** TODO: (Part 2) upgrade method to ask user for pronouns and background info *****/
 	public static void fillInfo(Person person){
 		//sets default privilege prior to questionnaire to 100
-		String name, story;
+		String name, story, pronouns;
 		
 		System.out.println("What is your name? ");
-		name = keyboard.nextLine();
-		System.out.println("\nHello " + name + ", write a small self-identifying statement about yourself "
-				+ "and your background and identity, this can be anything you like!\n"
-				+ "For example: I'm a [nationality / place of origin / ethnicity / sexuality / gender expression / etc.]...");
+		name = keyboard.nextLine(); // consume newline
+		
+		System.out.println("\nWhat are your preferred pronouns? (ex: he/him, she/her, they/them)");
+		pronouns = keyboard.nextLine();
+		
 		System.out.println("Tell us about yourself: ");
 		story = keyboard.nextLine();
-		
+
 		person.setName(name);
-		person.setStory(story);
+		person.setIdentity(pronouns, story);
+				
 	}
 
 	public static int doPrivilegeQuestionnaire() {
-		boolean isValid;
-		int choice, privilegeEstimate = Person.DEFAULT_PRIVILEGE;
-	
-		System.out.println("Please indicate whether the following statements are true or false.\n"
-				+ "Input 1 or 2 accordingly.");
-		
-		for(int i = 0; i < STATEMENTS.length; i++) 
-		{
-			isValid = false;
-			do{
-				System.out.println(STATEMENTS[i]);
-				System.out.print("1. True. \n2. False.\nEnter the appropriate answer: ");
-				choice = keyboard.nextInt();
-				System.out.println();
+		int privilegeEstimate = Person.DEFAULT_PRIVILEGE;
+		int choice;
 
-				switch (choice)
-				{
-					case 1:
-						privilegeEstimate += 10;
-						isValid = true;
-						break;
-					case 2:
-						privilegeEstimate -= 10;
-						isValid = true;
-						break;
-					default:
-						System.out.println("Invalid choice, please make sure to enter 1 or 2.");
-						break;			
-				}
-			}while(!isValid);
+		for (String statement : STATEMENTS) {
+			System.out.println(statement);
+			System.out.print("1. True \n2. False\nEnter choice: ");
+			choice = keyboard.nextInt();
+			privilegeEstimate += (choice == 1) ? PTS_PER_ANSWER : -PTS_PER_ANSWER;
 		}
-		
 		return privilegeEstimate;
 	}
+
 }
